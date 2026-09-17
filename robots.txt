@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /cart
+Disallow: /checkout
+Disallow: /payment
+Disallow: /bank-transfer
+Disallow: /order-confirmation
+Disallow: /orders
+Disallow: /wishlist
+Disallow: /api/
+
+Sitemap: https://brownpetals.sohaibotmani2006.workers.dev/sitemap.xml
