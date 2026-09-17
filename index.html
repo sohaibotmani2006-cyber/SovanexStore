@@ -1,14 +1,48 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SOVANEX — Sovereign Watches, Accessories & Fine Wallets</title>
   <meta name="description" content="Découvrez SOVANEX, une sélection de montres, accessoires et articles en cuir d'exception au Maroc.">
   <meta name="robots" content="index,follow">
-  <link rel="canonical" href="/">
+  <link rel="canonical" href="https://brownpetals.sohaibotmani2006.workers.dev/">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="fr_MA">
+  <meta property="og:site_name" content="SOVANEX">
+  <meta property="og:title" content="SOVANEX | Montres, accessoires et articles en cuir">
+  <meta property="og:description" content="Découvrez SOVANEX, une sélection de montres, accessoires et articles en cuir d'exception au Maroc.">
+  <meta property="og:url" content="https://brownpetals.sohaibotmani2006.workers.dev/">
+  <meta property="og:image" content="https://images.unsplash.com/photo-1522312346375-d1a52e2b99b3?auto=format&fit=crop&q=80&w=1200">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="SOVANEX | Montres, accessoires et articles en cuir">
+  <meta name="twitter:description" content="Découvrez SOVANEX, une sélection de montres, accessoires et articles en cuir d'exception au Maroc.">
+  <meta name="twitter:image" content="https://images.unsplash.com/photo-1522312346375-d1a52e2b99b3?auto=format&fit=crop&q=80&w=1200">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="apple-touch-icon" href="/favicon.svg">
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://brownpetals.sohaibotmani2006.workers.dev/#organization",
+          "name": "SOVANEX",
+          "url": "https://brownpetals.sohaibotmani2006.workers.dev/",
+          "logo": "https://brownpetals.sohaibotmani2006.workers.dev/favicon.svg"
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://brownpetals.sohaibotmani2006.workers.dev/#website",
+          "url": "https://brownpetals.sohaibotmani2006.workers.dev/",
+          "name": "SOVANEX",
+          "inLanguage": "fr-MA",
+          "publisher": { "@id": "https://brownpetals.sohaibotmani2006.workers.dev/#organization" }
+        }
+      ]
+    }
+  </script>
   
   <!-- DNS Preconnect to reduce load latency -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -527,6 +561,7 @@
     const db = getFirestore(app);
     const auth = getAuth(app);
     const storage = getStorage(app);
+    const SITE_ORIGIN = 'https://brownpetals.sohaibotmani2006.workers.dev';
     const fallbackImage = "https://images.unsplash.com/photo-1522312346375-d1a52e2b99b3?auto=format&fit=crop&q=80&w=800";
 
     const updateFavicon = (logoURL = '') => {
@@ -1691,7 +1726,7 @@
         canonical.rel = 'canonical';
         document.head.appendChild(canonical);
       }
-      canonical.href = absoluteUrl(this.settings.canonicalURL || seoPath);
+      canonical.href = absoluteUrl(seoPath);
 
       const setMeta = (property, content) => {
         let meta = document.querySelector(`meta[property="${property}"]`);
@@ -1704,6 +1739,7 @@
       };
       setMeta('og:title', this.settings.ogTitle || title);
       setMeta('og:description', this.settings.ogDescription || description);
+      setMeta('og:url', absoluteUrl(seoPath));
       if (this.settings.ogImage) setMeta('og:image', absoluteUrl(this.settings.ogImage));
 
       const existingSchema = document.getElementById('sovanex-product-schema');
@@ -4173,7 +4209,7 @@
       return `
         <div class="group relative bg-[#141414] rounded-2xl overflow-hidden border ${genderThemeBorder} shadow-md hover:shadow-2xl transition-all duration-300 flex flex-col justify-between" dir="${this.language === 'ar' ? 'rtl' : 'ltr'}">
           <div>
-            <div class="h-44 sm:h-64 md:h-80 overflow-hidden relative cursor-pointer card-img-trigger flex items-center justify-center bg-transparent" data-id="${product.id}">
+            <a href="${getProductRoutePath(product)}" aria-label="Voir ${escapeHtml(cleanName)}" class="block h-44 sm:h-64 md:h-80 overflow-hidden relative cursor-pointer card-img-trigger flex items-center justify-center bg-transparent" data-id="${product.id}">
               <img src="${cardImageSource}" alt="${cleanName}, produit SOVANEX" class="w-full h-full object-cover group-hover:scale-105 transition duration-700" loading="lazy" decoding="async">
               <div class="absolute inset-0 bg-black/5 group-hover:bg-black/10 transition"></div>
               ${product.discountPrice && Number(product.price) > Number(product.discountPrice) ? `<span class="absolute top-2 right-2 sm:top-4 sm:right-4 z-10 bg-red-700 text-white text-[9px] sm:text-[10px] font-bold px-2 py-1 rounded-full shadow-lg">-${Math.round((1 - (Number(product.discountPrice) / Number(product.price))) * 100)}%</span>` : ''}
@@ -4182,11 +4218,11 @@
                 <button type="button" class="wishlist-toggle-btn z-20 w-8 h-8 rounded-full bg-black/75 border border-white/20 text-lg flex items-center justify-center hover:border-luxuryGold transition" data-id="${product.id}" aria-label="${isWishlisted ? 'Retirer des favoris' : 'Ajouter aux favoris'}" title="${isWishlisted ? 'Retirer des favoris' : 'Ajouter aux favoris'}">${isWishlisted ? '♥' : '♡'}</button>
               </div>
               ${isOutOfStock ? '<span class="absolute bottom-2 left-2 sm:bottom-4 sm:left-4 z-10 bg-amber-500 text-black text-[9px] sm:text-[10px] font-bold px-2 py-1 rounded-full shadow-lg uppercase tracking-wider">Rupture de stock</span>' : ''}
-            </div>
+            </a>
 
             <div class="p-3 sm:p-6 space-y-1.5 sm:space-y-4">
               <span class="product-card-category text-[8px] sm:text-[10px] uppercase tracking-widest text-luxuryGold font-semibold">${product.category}</span>
-              <h3 class="font-serif text-sm sm:text-lg text-white group-hover:text-luxuryGold transition cursor-pointer card-title-trigger h-10 sm:h-14 overflow-hidden" data-id="${product.id}">${cleanName}</h3>
+              <h3 class="font-serif text-sm sm:text-lg text-white group-hover:text-luxuryGold transition cursor-pointer card-title-trigger h-10 sm:h-14 overflow-hidden" data-id="${product.id}"><a href="${getProductRoutePath(product)}" class="block">${cleanName}</a></h3>
               
               <div class="product-card-rating flex items-center gap-1 text-[10px] sm:text-xs">
                 ${(() => { const productRating = this.getProductRating(product.id); return `${this.getRatingStarsMarkup(productRating.average)}<span class="text-gray-400 font-light">${productRating.average ? productRating.average.toFixed(1) : '0.0'} (${productRating.count})</span>`; })()}
@@ -4221,7 +4257,8 @@
       });
 
       document.querySelectorAll(".card-img-trigger, .card-title-trigger").forEach(el => {
-        el.onclick = () => {
+        el.onclick = (event) => {
+          event.preventDefault();
           const id = el.getAttribute("data-id");
           const prod = store.products.find(p => p.id === id);
           if (prod) store.openProductDetailsModal(prod);
