@@ -7,7 +7,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const PORT = 8000;
 const INDEX_PATH = path.join(__dirname, 'index.html');
-const ALLOWED_ROUTE_PREFIXES = ['', '/shop', '/contact', '/policies', '/cart', '/checkout', '/payment', '/bank-transfer', '/order-confirmation', '/admin'];
+const ALLOWED_ROUTE_PREFIXES = ['/', '/shop', '/contact', '/policies', '/orders', '/wishlist', '/cart', '/checkout', '/payment', '/bank-transfer', '/order-confirmation', '/admin'];
 
 const mimeTypes = {
   '.html': 'text/html; charset=utf-8',
@@ -31,9 +31,9 @@ function safeFilePath(requestPath) {
   return path.join(__dirname, decoded.replace(/^\//, ''));
 }
 
-async function serveIndex(res) {
+async function serveIndex(res, extraHeaders = {}) {
   const html = await fs.readFile(INDEX_PATH);
-  res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+  res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', ...extraHeaders });
   res.end(html);
 }
 
@@ -78,11 +78,13 @@ const server = http.createServer(async (req, res) => {
   }
 
   if (!isKnownRoute && !normalizedPath.startsWith('/product/')) {
-    await serveIndex(res);
+    res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
+    res.end('Not Found');
     return;
   }
 
-  await serveIndex(res);
+  const isPrivateRoute = /^\/(admin|cart|checkout|payment|bank-transfer|order-confirmation|orders|wishlist)(\/|$)/.test(normalizedPath);
+  await serveIndex(res, isPrivateRoute ? { 'X-Robots-Tag': 'noindex, nofollow, noarchive' } : {});
 });
 
 server.listen(PORT, () => {
